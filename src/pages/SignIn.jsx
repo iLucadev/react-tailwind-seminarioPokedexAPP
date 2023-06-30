@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import Button from "./Button";
+import Button from "../components/Button";
 export default function SignIn({ data, handleFormChange, handleFormSubmit }) {
   return (
     <form className="flex flex-col gap-4 px-16 py-8 border-2 w-96 border-slate-950">

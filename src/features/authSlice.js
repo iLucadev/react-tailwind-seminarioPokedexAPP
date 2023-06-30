@@ -5,11 +5,8 @@ const slice = createSlice({
   initialState: {
     token: "",
     isAuth: false,
-    user: {
-      username: null,
-      pokedex: [],
-      poketeam: [],
-    },
+    user: null,
+    isLoading: true,
   },
   reducers: {
     addToken: (state, action) => {
@@ -21,9 +18,12 @@ const slice = createSlice({
     addUser: (state, action) => {
       state.user = action.payload;
     },
+    changeIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
 });
 
-export const { addToken, changeAuth, addUser } = slice.actions;
+export const { addToken, changeAuth, addUser, changeIsLoading } = slice.actions;
 
 export default slice.reducer;

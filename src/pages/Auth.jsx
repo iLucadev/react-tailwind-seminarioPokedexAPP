@@ -1,10 +1,12 @@
 import { useState } from "react";
-import SignIn from "../components/SignIn";
+import SignIn from "./SignIn";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 // import SignUp from "../components/SignUp";
 
 export default function Auth() {
   const { signIn } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -22,6 +24,7 @@ export default function Auth() {
 
   async function handleFormSubmit() {
     await signIn(formData);
+    navigate("/");
   }
 
   return (

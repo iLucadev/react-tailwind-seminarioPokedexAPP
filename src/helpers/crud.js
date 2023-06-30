@@ -19,7 +19,6 @@ const getUserData = async (endpoint, token) => {
 
     return response.data.result;
   } catch (error) {
-    // Manejo de errores
     console.error("Error while getting user:", error);
     throw error;
   }

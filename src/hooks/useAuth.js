@@ -1,36 +1,33 @@
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { addToken, addUser, changeAuth } from "../features/authSlice";
+import { addToken, addUser, changeAuth, changeIsLoading } from "../features/authSlice";
 import { getUserData } from "../helpers/crud";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
   const [cookies, setCookie] = useCookies(["token"]);
-  const { token, isAuth } = useSelector((state) => state.authData);
+  const { token, isAuth, isLoading } = useSelector((state) => state.authData);
+  const navigate = useNavigate();
 
   // Verify if there is a token in cookies on page load
   useEffect(() => {
     const tokenFromCookies = cookies.token;
 
     if (tokenFromCookies) {
-      // Update redux state
-      dispatch(addToken(tokenFromCookies));
-      dispatch(changeAuth(true));
+      const checkAuthState = async () => {
+        dispatch(addToken(tokenFromCookies));
+        dispatch(changeAuth(true));
+        dispatch(changeIsLoading(false));
 
-      // Get user data
-      const fetchUser = async () => {
-        try {
-          const userData = await getUserData("http://localhost:3000/api/users/using-token", tokenFromCookies);
-
-          dispatch(addUser(userData));
-        } catch (error) {
-          console.log(error);
-        }
+        const userData = await getUserData("http://localhost:3000/api/users/using-token", tokenFromCookies);
+        dispatch(addUser(userData));
+        navigate("/");
       };
 
-      fetchUser();
+      checkAuthState();
     }
   }, [cookies.token, dispatch]);
 
@@ -48,6 +45,7 @@ export const useAuth = () => {
       // Update auth in redux state
       dispatch(addToken(token));
       dispatch(changeAuth(true));
+      dispatch(changeIsLoading(false));
     } catch (error) {
       console.log("Error while signing in:", error);
     }
@@ -78,11 +76,12 @@ export const useAuth = () => {
       // Update auth in redux state
       dispatch(addToken(token));
       dispatch(changeAuth(true));
+      dispatch(changeIsLoading(false));
     } catch (error) {
       console.error("Error while signing up:", error);
       throw error;
     }
   };
 
-  return { token, isAuth, signIn, signOut, signUp };
+  return { token, isAuth, isLoading, signIn, signOut, signUp };
 };
